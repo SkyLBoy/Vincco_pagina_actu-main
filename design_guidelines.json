@@ -1,0 +1,115 @@
+{
+  "theme": "light",
+  "archetype": "4",
+  "archetype_name": "Swiss & High-Contrast (adapted for SaaS Tech)",
+  "colors": {
+    "primary": "#04608E",
+    "secondary": "#1EC2D7",
+    "complementary": "#1A4277",
+    "text_secondary": "#C3D2D7",
+    "background_base": "#FFFFFF",
+    "background_alt": "#F8FAFC",
+    "text_main": "#0F172A",
+    "text_muted": "#475569",
+    "border_subtle": "#E2E8F0"
+  },
+  "typography": {
+    "headings_font": "Outfit",
+    "body_font": "Manrope",
+    "h1_size": "text-4xl sm:text-5xl lg:text-6xl",
+    "h2_size": "text-2xl sm:text-3xl lg:text-4xl",
+    "tracking": "tracking-tight"
+  },
+  "spacing_and_layout": {
+    "section_padding": "py-20 md:py-32",
+    "container_padding": "px-4 md:px-8 max-w-7xl mx-auto",
+    "grid_strategy_marketing": "grid-cols-1 md:grid-cols-12 gap-6 md:gap-8"
+  },
+  "components_strategy": {
+    "cards": "Flat background, 1px subtle border, rounded-2xl, hover:-translate-y-1 hover:shadow-xl transition-all duration-300",
+    "buttons": "Rounded-full for main CTA, rounded-lg for secondary. Primary CTA uses #04608E background with white text, hover:bg-[#1A4277]. Accent CTAs or borders use #1EC2D7.",
+    "navbar": "Sticky, top-0, z-50, backdrop-blur-xl bg-white/80 border-b border-slate-200/50.",
+    "forms": "Shadcn UI Form/Input components, customized with focus:ring-[#1EC2D7]"
+  },
+  "sections": [
+    {
+      "name": "Navbar",
+      "features": ["Sticky navigation", "Logo", "Links", "Language Selector (ES/EN)", "CTA 'Contactar'"],
+      "layout": "Flexbox, justify-between items-center"
+    },
+    {
+      "name": "Hero",
+      "features": ["Headline: Conectamos tu negocio con tus clientes", "CTA: Solicitar información", "SaaS aesthetic", "Abstract subtle grid/dot background pattern using CSS"],
+      "layout": "Asymmetrical, left-aligned text (col-span-7), right side (col-span-5) with abstract UI illustration/dashboard mockup."
+    },
+    {
+      "name": "Logos Marquee",
+      "features": ["Infinite scroll marquee of client logos", "Use react-fast-marquee", "Simulate modern tech companies with Lucide icons + text"],
+      "layout": "Full width, subtle grey background #F8FAFC, padding py-12"
+    },
+    {
+      "name": "Core Services",
+      "features": ["Bento grid of interactive cards", "Atención Telefónica, Telemarketing, Soporte Técnico, Cobranza"],
+      "layout": "Mode A 'Tetris' Grid (12 cols). Varying heights to break symmetry."
+    },
+    {
+      "name": "Agent vs No Agent (Channels)",
+      "features": ["Comparison of 'Servicios de contacto con agente' vs 'Servicios de contacto sin agente'"],
+      "layout": "Shadcn Tabs layout. One tab for 'Con Agente' (Calls, Chat, Email, Back Office, Social Media), one for 'Sin Agente' (Blasting, Mailing, SMS, IVR)."
+    },
+    {
+      "name": "Benefits & Differentiators",
+      "features": ["KPIs, technology, security", "Data-heavy tech look"],
+      "layout": "Dark Section. Mode B 'Control Room' Grid. Deep Navy background (#1A4277) with white text and Turquoise (#1EC2D7) highlights."
+    },
+    {
+      "name": "Technology Stack",
+      "features": ["CRM, IVR, infrastructure"],
+      "layout": "Minimalist grid with large lucide-react icons, focusing on integrations and infrastructure."
+    },
+    {
+      "name": "Process",
+      "features": ["Step-by-step 'how we work'"],
+      "layout": "Vertical timeline or a 3-4 column grid with connecting lines."
+    },
+    {
+      "name": "Final CTA & Form",
+      "features": ["Contact form simple", "Headline", "CTA"],
+      "layout": "Split layout inside a large rounded-3xl container. Text on left, Form on right."
+    }
+  ],
+  "media": {
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1766066014237-00645c74e9c6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBjdXN0b21lciUyMHN1cHBvcnQlMjBhZ2VudHxlbnwwfHx8fDE3NzU0OTc4MzB8MA&ixlib=rb-4.1.0&q=85",
+        "category": "services_agent",
+        "description": "Smiling woman wearing a headset at a computer. Perfect for 'Servicios de contacto con agente' section."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1603714228681-b399854b8f80?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBjdXN0b21lciUyMHN1cHBvcnQlMjBhZ2VudHxlbnwwfHx8fDE3NzU0OTc4MzB8MA&ixlib=rb-4.1.0&q=85",
+        "category": "about_or_process",
+        "description": "Man in white button up smiling. Good for trust/team sections."
+      }
+    ],
+    "icons": "lucide-react"
+  },
+  "animation_guidelines": {
+    "hover_states": "All buttons need hover:scale-[1.02] active:scale-95. Cards need hover:-translate-y-1 hover:shadow-xl.",
+    "scroll": "Use Lenis for smooth scrolling.",
+    "entrance": "Use framer-motion for staggered entrance animations on the bento grids (y: 20, opacity: 0 -> y: 0, opacity: 1)."
+  },
+  "accessibility": {
+    "contrast": "Ensure #1EC2D7 text is only used on #04608E or #1A4277 backgrounds. If used on white, use it for large icons or borders, not small text.",
+    "testing": "All interactive elements MUST have data-testid attributes."
+  },
+  "instructions_to_main_agent": [
+    "Do NOT use placeholder text or dummy image URLs. For logos, use a combination of Lucide icons and text (e.g. <CircleIcon /> Acme Corp).",
+    "Strictly adhere to the selected fonts: Outfit for headings, Manrope for body text.",
+    "Build a custom pure HTML/Tailwind Marketing Hero with an abstract CSS-based dot/grid background. DO NOT use Shadcn section components for the hero.",
+    "Implement a Bento Grid for the 'Servicios' section. Make the cards asymmetric (e.g., col-span-4 vs col-span-8).",
+    "Use Shadcn UI for Tabs (to toggle agent/no-agent services) and Forms (for the contact CTA).",
+    "Add 'data-testid' to every link, button, input, and tab.",
+    "Install and setup Lenis for smooth scrolling.",
+    "Ensure the hero headline does not exceed text-6xl. Do not center everything; use left-alignment to create a sophisticated SaaS aesthetic."
+  ]
+}
