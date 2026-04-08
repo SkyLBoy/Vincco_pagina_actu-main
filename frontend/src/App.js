@@ -38,7 +38,7 @@ const LandingPage = () => {
     <div className="min-h-screen bg-white font-manrope" data-testid="landing-page">
       <Navbar />
       {/* Partners Marquee - Lo primero que se ve después del navbar */}
-      <div className="pt-16 md:pt-20">
+      <div className="pt-20 md:pt-28">
         <PartnersMarquee />
       </div>
       <main>

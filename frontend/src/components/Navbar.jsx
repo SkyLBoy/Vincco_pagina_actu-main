@@ -72,8 +72,8 @@ export const Navbar = () => {
           : 'bg-white/80 backdrop-blur-md'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
+      <div className="w-full px-4 md:px-8">
+        <div className="relative flex items-center justify-between h-20 md:h-28">
           {/* Logo */}
           <a 
             href="#" 
@@ -88,18 +88,18 @@ export const Navbar = () => {
             <img 
               src="https://vincco.com/static/logo/logo_grande.png" 
               alt="Vincco Logo" 
-              className="h-9 md:h-11"
+              className="h-12 md:h-16"
             />
           </a>
 
           {/* Desktop Navigation */}
-          <div className="hidden xl:flex items-center gap-6">
+          <div className="hidden xl:flex absolute left-1/2 -translate-x-1/2 items-center gap-8">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={(e) => scrollToSection(e, link.href)}
-                className="text-sm font-medium text-slate-600 hover:text-[#04608E] transition-colors whitespace-nowrap"
+                className="text-base font-semibold text-slate-600 hover:text-[#04608E] transition-colors whitespace-nowrap"
                 data-testid={`nav-link-${link.href.slice(1)}`}
               >
                 {link.label}
@@ -160,7 +160,7 @@ export const Navbar = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.2 }}
-              className="fixed top-16 md:top-20 left-0 right-0 bg-white border-b border-slate-200 shadow-lg xl:hidden z-40 max-h-[calc(100vh-5rem)] overflow-y-auto"
+              className="fixed top-20 md:top-28 left-0 right-0 bg-white border-b border-slate-200 shadow-lg xl:hidden z-40 max-h-[calc(100vh-5rem)] overflow-y-auto"
             >
               <div className="px-4 py-4 space-y-1">
                 {navLinks.map((link, index) => (
