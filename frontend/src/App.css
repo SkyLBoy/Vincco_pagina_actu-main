@@ -35,7 +35,7 @@ html {
 
 /* Selection Color */
 ::selection {
-  background-color: #1EC2D7;
+  background-color: #2aa4b4;
   color: white;
 }
 
@@ -118,13 +118,13 @@ input:focus,
 textarea:focus,
 button:focus {
   outline: none;
-  ring-color: #1EC2D7;
+  ring-color: #5da9b3;
 }
 
 /* Responsive Typography */
 @media (max-width: 640px) {
   html {
-    font-size: 14px;
+    font-size: 20px;
   }
 }
 
