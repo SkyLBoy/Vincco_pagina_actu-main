@@ -86,7 +86,7 @@ export const Navbar = () => {
             }}
           >
             <img 
-              src="https://vincco.com/static/logo/logo_grande.png" 
+              src="/img/logo_grande_vincco.png" 
               alt="Vincco Logo" 
               className="h-12 md:h-16"
             />

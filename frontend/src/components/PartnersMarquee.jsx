@@ -4,13 +4,14 @@ import { useLanguage } from '../contexts/LanguageContext';
 const partners = [
   { 
     name: 'Microsoft', 
-    logo: 'https://www.microsoft.com/favicon.ico',
+    logo: '/img/microsoft-logo.png',
     filter: false
   },
   { 
     name: 'Dell EMC', 
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/4/48/Dell_Logo.svg',
-    filter: false  
+    logo: '/img/dell-logo.png',
+    filter: false,
+    height: '100px'
   },
   { 
     name: 'Kaspersky', 
@@ -19,18 +20,19 @@ const partners = [
   },
   { 
     name: 'HP', 
-    logo: '/img/logo-hp.jpg',
-    filter: false
+    logo: '/img/logo-hp.png',
+    filter: false,
+    height: '80px'  // ajustar este valor al para cada icono
   },
   { 
     name: 'Samsung', 
     logo: '/img/samsung-logo.png',
     filter: false,
-    height: '100px'  // 👈 ajusta este valor al gusto
+    height: '110px'  // ajustar este valor al para cada icono
   },
   { 
     name: 'CT Internacionales', 
-    logo: 'https://vincco.com/static/imgs/logo/logo-ct.png',
+    logo: '/img/logo-ct.png',
     filter: false
   },
 ];
