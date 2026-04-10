@@ -28,7 +28,7 @@ const ChannelCard = ({ channelKey, Icon, index }) => {
       transition={{ delay: index * 0.08 }}
       className="group"
     >
-      <div 
+      <div
         className="relative p-5 bg-white rounded-xl border border-slate-100 hover:border-[#1EC2D7]/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
         data-testid={`channel-card-${channelKey}`}
       >
@@ -54,7 +54,7 @@ export const SolutionsSection = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="solutions" className="py-16 md:py-24 bg-white overflow-hidden">
+    <section id="solutions" className="py-16 md:py-24 overflow-hidden" style={{ background: '#DBEAFE' }}>
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         {/* Section Header */}
         <motion.div
@@ -78,13 +78,13 @@ export const SolutionsSection = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="with-agent" className="w-full">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="flex justify-center mb-8"
           >
-            <TabsList className="bg-[#F8FAFC] p-1 rounded-full border border-slate-200">
+            <TabsList className="bg-white p-1 rounded-full border border-slate-200">
               <TabsTrigger
                 value="with-agent"
                 className="rounded-full px-5 py-2 text-sm font-medium data-[state=active]:bg-[#04608E] data-[state=active]:text-white transition-all"
