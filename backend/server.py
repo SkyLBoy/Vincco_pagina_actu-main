@@ -11,6 +11,9 @@ from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
 
+######cd C:\Users\jvcal\Documents\Vincco_pagina_actu-main\backend
+####venv\Scripts\activate
+###uvicorn server:app --reload
 
 ROOT_DIR = Path(__file__).resolve().parent
 load_dotenv(dotenv_path=ROOT_DIR / '.env', override=True)
