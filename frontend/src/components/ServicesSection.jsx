@@ -67,30 +67,35 @@ export const ServicesSection = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <div
-                className="group relative h-full p-6 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 overflow-hidden"
-              >
-                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${service.color}`} />
+              <div className="group relative h-full p-6 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 overflow-hidden">
+                
+                {/* Accent line */}
+                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${service.color} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left`} />
 
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${service.color} flex items-center justify-center mb-4`}>
+                {/* Icon */}
+                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${service.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                   <service.icon className="w-7 h-7 text-white" />
                 </div>
 
-                <h3 className="font-outfit text-lg font-bold text-[#0F172A] mb-2">
+                {/* Text */}
+                <h3 className="font-outfit text-lg font-bold text-[#0F172A] mb-2 group-hover:text-[#04608E] transition-colors">
                   {t(`services.${service.key}.title`)}
                 </h3>
-
                 <p className="text-sm text-slate-500 line-clamp-3">
                   {t(`services.${service.key}.description`)}
                 </p>
 
+                {/* Ver más */}
                 <button
                   onClick={() => setActiveVideo(service)}
-                  className="mt-4 flex items-center gap-1 text-[#1EC2D7] hover:gap-2 transition-all"
+                  className="mt-4 flex items-center gap-1 text-[#1EC2D7] opacity-0 group-hover:opacity-100 hover:gap-2 transition-all duration-300 cursor-pointer"
                 >
                   <span className="text-sm font-medium">Ver más</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
+
+                {/* Background glow */}
+                <div className={`absolute -right-10 -bottom-10 w-32 h-32 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-5 rounded-full blur-2xl transition-opacity duration-300`} />
               </div>
             </motion.div>
           ))}
@@ -101,24 +106,38 @@ export const ServicesSection = () => {
       <AnimatePresence>
         {activeVideo && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4"
             onClick={() => setActiveVideo(null)}
           >
             <motion.div
-              className="relative w-full max-w-3xl bg-black rounded-2xl overflow-hidden"
+              initial={{ scale: 0.92, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.92, opacity: 0, y: 20 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className="relative w-full max-w-3xl bg-black rounded-2xl overflow-hidden shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className={`flex justify-between px-5 py-3 bg-gradient-to-r ${activeVideo.color}`}>
-                <h3 className="text-white font-semibold">
-                  {t(`services.${activeVideo.key}.title`)}
-                </h3>
-
-                <button onClick={() => setActiveVideo(null)}>
-                  <X className="w-5 h-5 text-white" />
+              {/* Modal header */}
+              <div className={`flex items-center justify-between px-5 py-3 bg-gradient-to-r ${activeVideo.color}`}>
+                <div className="flex items-center gap-2">
+                  <activeVideo.icon className="w-4 h-4 text-white/80" />
+                  <h3 className="text-white font-semibold">
+                    {t(`services.${activeVideo.key}.title`)}
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setActiveVideo(null)}
+                  className="text-white/70 hover:text-white hover:bg-white/20 rounded-full p-1.5 transition-colors"
+                >
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
-              {/* VIDEO OPTIMIZADO */}
+              {/* Video */}
               <video
                 key={activeVideo.video}
                 controls
@@ -130,7 +149,6 @@ export const ServicesSection = () => {
                 <source src={activeVideo.video} type="video/mp4" />
                 Tu navegador no soporta video.
               </video>
-
             </motion.div>
           </motion.div>
         )}
