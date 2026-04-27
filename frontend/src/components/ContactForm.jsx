@@ -107,7 +107,7 @@ export const ContactForm = () => {
               <div className="space-y-5">
                 {[
                   { icon: Phone, label: language === 'es' ? 'Teléfono' : 'Phone', value: '(66)-21091000' },
-                  { icon: Mail, label: 'Email', value: 'contacto@vincco.com' },
+                  { icon: Mail, label: 'Email', value: 'wilfredo.benitez@vincco.mx' },
                   { icon: MapPin, label: language === 'es' ? 'Ubicación' : 'Location', value: 'Hermosillo, Sonora | Col. Centro | Guerrero #19' },
                 ].map((item, index) => (
                   <motion.div 

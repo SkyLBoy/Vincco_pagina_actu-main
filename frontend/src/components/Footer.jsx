@@ -157,7 +157,7 @@ export const Footer = () => {
                     <Phone className="w-4 h-4 text-[#1EC2D7]" />
                   </div>
                   <div>
-                    <p className="text-white text-sm font-medium">+52 (55) 5555-5555</p>
+                    <p className="text-white text-sm font-medium">+52 (662) 167-4992 </p>
                     <p className="text-slate-500 text-xs">{language === 'es' ? 'Lun - Vie 9am - 6pm' : 'Mon - Fri 9am - 6pm'}</p>
                   </div>
                 </li>
@@ -166,7 +166,7 @@ export const Footer = () => {
                     <Mail className="w-4 h-4 text-[#1EC2D7]" />
                   </div>
                   <div>
-                    <p className="text-white text-sm font-medium">contacto@vincco.com</p>
+                    <p className="text-white text-sm font-medium">wilfredo.benitez@vincco.mx</p>
                     <p className="text-slate-500 text-xs">{language === 'es' ? 'Respuesta en 24hrs' : 'Response within 24hrs'}</p>
                   </div>
                 </li>
@@ -175,7 +175,7 @@ export const Footer = () => {
                     <MapPin className="w-4 h-4 text-[#1EC2D7]" />
                   </div>
                   <div>
-                    <p className="text-white text-sm font-medium">Ciudad de México</p>
+                    <p className="text-white text-sm font-medium">Hermosillo, Sonora</p>
                     <p className="text-slate-500 text-xs">México</p>
                   </div>
                 </li>
