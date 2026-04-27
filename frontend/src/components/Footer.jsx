@@ -1,16 +1,6 @@
 import { motion } from 'framer-motion';
-import { Phone, Mail, MapPin, Building2, Briefcase, Store, Factory, Headphones, MessageSquare, BarChart3 } from 'lucide-react';
+import { Phone, Mail, MapPin } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-
-// Client logos/names placeholder
-const clients = [
-  { name: 'Empresa Nacional', icon: Building2 },
-  { name: 'Grupo Financiero', icon: Briefcase },
-  { name: 'Retail México', icon: Store },
-  { name: 'Industrial Corp', icon: Factory },
-  { name: 'Servicios Plus', icon: Headphones },
-  { name: 'Tech Solutions', icon: MessageSquare },
-];
 
 export const Footer = () => {
   const { t, language } = useLanguage();
@@ -50,46 +40,6 @@ export const Footer = () => {
 
   return (
     <footer className="bg-[#0F172A]">
-      {/* Clients Section */}
-      <div className="border-b border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-10"
-          >
-            <h3 className="text-xl md:text-2xl font-outfit font-bold text-white mb-2">
-              {language === 'es' ? 'Empresas que confían en nosotros' : 'Companies that trust us'}
-            </h3>
-            <p className="text-slate-400 text-sm">
-              {language === 'es' ? 'Más de 50 empresas han mejorado su atención al cliente con nosotros' : 'Over 50 companies have improved their customer service with us'}
-            </p>
-          </motion.div>
-          
-          {/* Client Logos Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {clients.map((client, index) => (
-              <motion.div
-                key={client.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-                className="group flex items-center justify-center gap-2 p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:border-[#1EC2D7]/30 hover:bg-slate-800 transition-all duration-300"
-              >
-                <client.icon className="w-5 h-5 text-[#1EC2D7] group-hover:scale-110 transition-transform" />
-                <span className="text-sm text-slate-300 font-medium">{client.name}</span>
-              </motion.div>
-            ))}
-          </div>
-          
-          <p className="text-center text-slate-500 text-xs mt-6">
-            {language === 'es' ? '* Espacio para logos de clientes reales' : '* Placeholder for real client logos'}
-          </p>
-        </div>
-      </div>
-
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
@@ -120,7 +70,7 @@ export const Footer = () => {
                   { href: 'https://www.linkedin.com/company/vincco', icon: 'M20.45,20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85,0-2.14,1.45-2.14,2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9,1.64-1.85,3.37-1.85,3.6,0,4.27,2.37,4.27,5.46v6.28ZM5.34,7.43c-1.14,0-2.07-.93-2.07-2.07s.93-2.07,2.07-2.07,2.07.93,2.07,2.07-.93,2.07-2.07,2.07ZM7.12,20.45H3.56V9h3.56v11.45ZM22.22,0H1.77C.79,0,0,.77,0,1.72v20.56c0,.95.79,1.72,1.77,1.72h20.45c.98,0,1.78-.77,1.78-1.72V1.72c0-.95-.8-1.72-1.78-1.72Z', name: 'LinkedIn' },
                   { href: 'https://www.instagram.com/vinccocentrodecontacto/', icon: 'M12,2.16c3.2,0,3.58.01,4.85.07,1.17.05,1.8.25,2.23.41.56.22.96.48,1.38.9s.68.82.9,1.38c.16.43.36,1.06.41,2.23.06,1.27.07,1.65.07,4.85s-.01,3.58-.07,4.85c-.05,1.17-.25,1.8-.41,2.23-.22.56-.48.96-.9,1.38s-.82.68-1.38.9c-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9s-.68-.82-.9-1.38c-.16-.43-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38s.82-.68,1.38-.9c.43-.16,1.06-.36,2.23-.41,1.27-.06,1.65-.07,4.85-.07M12,0C8.74,0,8.33.01,7.05.07,5.78.13,4.9.33,4.14.63c-.78.3-1.44.71-2.1,1.37s-1.07,1.32-1.37,2.1c-.3.76-.5,1.64-.56,2.91C.05,8.33,0,8.74,0,12s.01,3.67.07,4.95c.06,1.27.26,2.15.56,2.91.3.78.71,1.44,1.37,2.1s1.32,1.07,2.1,1.37c.76.3,1.64.5,2.91.56,1.28.06,1.69.07,4.95.07s3.67-.01,4.95-.07c1.27-.06,2.15-.26,2.91-.56.78-.3,1.44-.71,2.1-1.37s1.07-1.32,1.37-2.1c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.3-.78-.71-1.44-1.37-2.1s-1.32-1.07-2.1-1.37c-.76-.3-1.64-.5-2.91-.56C15.67.01,15.26,0,12,0Zm0,5.84c-3.4,0-6.16,2.76-6.16,6.16s2.76,6.16,6.16,6.16,6.16-2.76,6.16-6.16-2.76-6.16-6.16-6.16Zm0,10.16c-2.21,0-4-1.79-4-4s1.79-4,4-4,4,1.79,4,4-1.79,4-4,4Zm7.85-10.4c0,.79-.64,1.43-1.43,1.43s-1.43-.64-1.43-1.43.64-1.43,1.43-1.43,1.43.64,1.43,1.43Z', name: 'Instagram' },
                 ].map((social, index) => (
-                  <a
+                  <a  
                     key={index}
                     href={social.href}
                     target="_blank"
@@ -152,7 +102,7 @@ export const Footer = () => {
               <ul className="space-y-3">
                 {quickLinks.map((link) => (
                   <li key={link.label}>
-                    <a
+                    <a  
                       href={link.href}
                       onClick={(e) => scrollToSection(e, link.href)}
                       className="text-slate-400 hover:text-[#1EC2D7] transition-colors text-sm flex items-center gap-2 group"
@@ -239,12 +189,9 @@ export const Footer = () => {
       <div className="border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            {/* Copyright */}
             <p className="text-slate-500 text-sm text-center md:text-left">
               © {currentYear} VINCCO. {t('footer.rights')}
             </p>
-
-            {/* Division Logo - Simplified */}
             <div className="flex items-center gap-3">
               <span className="text-slate-600 text-xs">{t('footer.division')}</span>
               <img 
