@@ -1,9 +1,8 @@
 from fastapi import FastAPI, APIRouter, HTTPException
-from dotenv import load_dotenv
-import resend
+from dotenv import dotenv_values
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
-import os
+import resend
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
@@ -11,28 +10,59 @@ from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
 
-######cd C:\Users\jvcal\Documents\Vincco_pagina_actu-main\backend
-####venv\Scripts\activate
-###uvicorn server:app --reload
+# =========================
+# 🔧 LOAD ENV VARIABLES
+# =========================
 
 ROOT_DIR = Path(__file__).resolve().parent
-load_dotenv(dotenv_path=ROOT_DIR / '.env', override=True)
+env_path = ROOT_DIR / ".env"
 
-resend.api_key = os.environ['RESEND_API_KEY']
+env_vars = dotenv_values(env_path)
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+RESEND_API_KEY = env_vars.get("RESEND_API_KEY")
+MONGO_URL = env_vars.get("MONGO_URL")
+DB_NAME = env_vars.get("DB_NAME")
+CORS_ORIGINS = env_vars.get("CORS_ORIGINS", "*")
 
-# Configure logging
+print("ENV PATH:", env_path)
+print("RESEND_API_KEY:", RESEND_API_KEY)
+
+# =========================
+# 🧾 LOGGING
+# =========================
+
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
-# Create the main app without a prefix
+# =========================
+# 🔐 VALIDACIÓN ENV
+# =========================
+
+if not MONGO_URL:
+    raise Exception("❌ Falta MONGO_URL en .env")
+
+if not DB_NAME:
+    raise Exception("❌ Falta DB_NAME en .env")
+
+if not RESEND_API_KEY:
+    logger.warning("⚠️ RESEND_API_KEY no configurada — emails desactivados")
+else:
+    resend.api_key = RESEND_API_KEY
+
+# =========================
+# 🗄️ DATABASE
+# =========================
+
+client = AsyncIOMotorClient(MONGO_URL)
+db = client[DB_NAME]
+
+# =========================
+# 🚀 APP
+# =========================
+
 app = FastAPI(
     title="Vincco API",
     description="API for Vincco Contact Center Landing Page",
@@ -42,16 +72,17 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=CORS_ORIGINS.split(","),
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+# =========================
+# 📦 MODELS
+# =========================
 
-# Define Models
 class ContactCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
     email: EmailStr
@@ -70,7 +101,7 @@ class Contact(BaseModel):
     phone: Optional[str] = None
     message: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    status: str = "new"  # new, contacted, converted
+    status: str = "new"
 
 
 class ContactResponse(BaseModel):
@@ -90,8 +121,10 @@ class StatusCheck(BaseModel):
 class StatusCheckCreate(BaseModel):
     client_name: str
 
+# =========================
+# 🌐 ROUTES
+# =========================
 
-# Routes
 @api_router.get("/")
 async def root():
     return {"message": "Vincco API is running", "version": "1.0.0"}
@@ -104,7 +137,6 @@ async def health_check():
 
 @api_router.post("/contacts", response_model=ContactResponse)
 async def create_contact(contact_data: ContactCreate):
-    """Create a new contact form submission"""
     try:
         contact = Contact(
             name=contact_data.name,
@@ -115,95 +147,66 @@ async def create_contact(contact_data: ContactCreate):
         )
 
         doc = contact.model_dump()
-        doc['created_at'] = doc['created_at'].isoformat()
+        doc["created_at"] = doc["created_at"].isoformat()
 
-        # Guardar en MongoDB primero (nunca se pierde el lead)
         await db.contacts.insert_one(doc)
-        logger.info(f"Contacto guardado en MongoDB: {contact.id}")
+        logger.info(f"Contacto guardado: {contact.id}")
 
-        # Enviar correo de notificación
-        # PRODUCCIÓN: cambiar "from" a contacto@vincco.com y "to" a contacto@vincco.com
-        try:
-            resend.Emails.send({
-                "from": "onboarding@resend.dev",        # <- PRODUCCIÓN: "contacto@vincco.com"
-                "to": ["sebastiancalderonlopez@gmail.com"],  # <- debe ser el correo con que te registraste en Resend
-                "reply_to": contact_data.email,
-                "subject": f"Nuevo mensaje de {contact_data.name}",
-                "html": f"""
-                    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-                        <h2 style="color: #04608E;">Nuevo mensaje de contacto</h2>
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="padding: 8px; font-weight: bold;">Nombre:</td>
-                                <td style="padding: 8px;">{contact_data.name}</td>
-                            </tr>
-                            <tr style="background: #f8fafc;">
-                                <td style="padding: 8px; font-weight: bold;">Email:</td>
-                                <td style="padding: 8px;">{contact_data.email}</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 8px; font-weight: bold;">Empresa:</td>
-                                <td style="padding: 8px;">{contact_data.company or "—"}</td>
-                            </tr>
-                            <tr style="background: #f8fafc;">
-                                <td style="padding: 8px; font-weight: bold;">Teléfono:</td>
-                                <td style="padding: 8px;">{contact_data.phone or "—"}</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 8px; font-weight: bold; vertical-align: top;">Mensaje:</td>
-                                <td style="padding: 8px;">{contact_data.message}</td>
-                            </tr>
-                        </table>
-                    </div>
-                """,
-            })
-            logger.info(f"Correo enviado para contacto: {contact.id}")
-        except Exception as email_error:
-            # Si falla el correo, el contacto ya está guardado en MongoDB — no se pierde
-            logger.error(f"Error enviando correo (contacto guardado): {email_error}")
+        # ✉️ Email (solo si hay API KEY)
+        if RESEND_API_KEY:
+            try:
+                resend.Emails.send({
+                    "from": "onboarding@resend.dev",
+                    "to": ["sebastiancalderonlopez@gmail.com"],
+                    "reply_to": contact_data.email,
+                    "subject": f"Nuevo mensaje de {contact_data.name}",
+                    "html": f"<p>{contact_data.message}</p>",
+                })
+                logger.info(f"Correo enviado: {contact.id}")
+            except Exception as email_error:
+                logger.error(f"Error enviando correo: {email_error}")
 
         return ContactResponse(
             success=True,
             message="Contact created successfully",
             contact_id=contact.id
         )
+
     except Exception as e:
-        logger.error(f"Error creating contact: {e}")
+        logger.error(f"Error: {e}")
         raise HTTPException(status_code=500, detail="Error saving contact")
 
 
 @api_router.get("/contacts", response_model=List[Contact])
 async def get_contacts():
-    """Get all contacts (admin endpoint)"""
     contacts = await db.contacts.find({}, {"_id": 0}).to_list(1000)
 
     for contact in contacts:
-        if isinstance(contact.get('created_at'), str):
-            contact['created_at'] = datetime.fromisoformat(contact['created_at'])
+        if isinstance(contact.get("created_at"), str):
+            contact["created_at"] = datetime.fromisoformat(contact["created_at"])
 
     return contacts
 
 
 @api_router.get("/contacts/{contact_id}", response_model=Contact)
 async def get_contact(contact_id: str):
-    """Get a specific contact by ID"""
     contact = await db.contacts.find_one({"id": contact_id}, {"_id": 0})
 
     if not contact:
         raise HTTPException(status_code=404, detail="Contact not found")
 
-    if isinstance(contact.get('created_at'), str):
-        contact['created_at'] = datetime.fromisoformat(contact['created_at'])
+    if isinstance(contact.get("created_at"), str):
+        contact["created_at"] = datetime.fromisoformat(contact["created_at"])
 
     return contact
 
 
 @api_router.patch("/contacts/{contact_id}/status")
 async def update_contact_status(contact_id: str, status: str):
-    """Update contact status"""
     valid_statuses = ["new", "contacted", "converted"]
+
     if status not in valid_statuses:
-        raise HTTPException(status_code=400, detail=f"Invalid status. Must be one of: {valid_statuses}")
+        raise HTTPException(status_code=400, detail="Invalid status")
 
     result = await db.contacts.update_one(
         {"id": contact_id},
@@ -213,45 +216,23 @@ async def update_contact_status(contact_id: str, status: str):
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Contact not found")
 
-    return {"success": True, "message": "Status updated"}
+    return {"success": True}
 
 
 @api_router.delete("/contacts/{contact_id}")
 async def delete_contact(contact_id: str):
-    """Delete a contact"""
     result = await db.contacts.delete_one({"id": contact_id})
 
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Contact not found")
 
-    return {"success": True, "message": "Contact deleted"}
+    return {"success": True}
 
 
-# Legacy endpoints
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.model_dump()
-    status_obj = StatusCheck(**status_dict)
+# =========================
+# 🔗 INIT
+# =========================
 
-    doc = status_obj.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
-
-    _ = await db.status_checks.insert_one(doc)
-    return status_obj
-
-
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
-
-    for check in status_checks:
-        if isinstance(check['timestamp'], str):
-            check['timestamp'] = datetime.fromisoformat(check['timestamp'])
-
-    return status_checks
-
-
-# Include the router in the main app
 app.include_router(api_router)
 
 

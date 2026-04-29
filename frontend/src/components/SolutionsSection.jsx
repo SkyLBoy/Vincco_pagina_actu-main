@@ -64,7 +64,7 @@ export const SolutionsSection = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-10"
         >
-          <span className="inline-block text-[#1EC2D7] font-semibold text-sm uppercase tracking-wider mb-2 px-4 py-1 bg-[#1EC2D7]/10 rounded-full">03</span>
+
           <h2 className="font-outfit text-2xl sm:text-3xl lg:text-4xl font-bold text-[#0F172A] tracking-tight mt-3 mb-3">
             {t('solutions.title')}
           </h2>

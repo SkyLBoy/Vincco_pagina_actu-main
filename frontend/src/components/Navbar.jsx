@@ -8,6 +8,7 @@ export const Navbar = () => {
   const { language, toggleLanguage, t } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,45 +18,79 @@ export const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu when clicking outside or on resize
+  // Close mobile menu on resize
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 1280) {
-        setIsMobileMenuOpen(false);
-      }
+      if (window.innerWidth >= 1280) setIsMobileMenuOpen(false);
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // ─── Robust IntersectionObserver ───────────────────────────────────────────
+  // Keeps a map of which sections are currently visible and always picks
+  // the one closest to the top of the viewport as the "active" one.
+  useEffect(() => {
+    const sectionIds = ['about', 'services', 'solutions', 'distinguishes', 'backing'];
+    const visibleSections = new Map(); // id → boundingClientRect.top
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            visibleSections.set(entry.target.id, entry.boundingClientRect.top);
+          } else {
+            visibleSections.delete(entry.target.id);
+          }
+        });
+
+        if (visibleSections.size === 0) return;
+
+        // Pick the section whose top is closest to (but below) the navbar
+        const topmost = [...visibleSections.entries()].reduce((a, b) =>
+          Math.abs(a[1]) < Math.abs(b[1]) ? a : b
+        );
+        setActiveSection(`#${topmost[0]}`);
+      },
+      {
+        root: null,
+        // Trigger when section enters the band between 80 px and 50 % of viewport
+        rootMargin: '-80px 0px -50% 0px',
+        threshold: 0,
+      }
+    );
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+  // ──────────────────────────────────────────────────────────────────────────
+
   const navLinks = [
-    { href: '#about', label: t('nav.about') },
-    { href: '#services', label: t('nav.services') },
-    { href: '#solutions', label: t('nav.solutions') },
-    { href: '#distinguishes', label: t('nav.distinguishes') },
-    { href: '#backing', label: t('nav.backing') },
+    { href: '#about',        label: t('nav.about') },
+    { href: '#services',     label: t('nav.services') },
+    { href: '#solutions',    label: t('nav.solutions') },
+    { href: '#distinguishes',label: t('nav.distinguishes') },
+    { href: '#backing',      label: t('nav.backing') },
   ];
 
   const scrollToSection = (e, href) => {
     e.preventDefault();
     e.stopPropagation();
-    
-    // Close mobile menu first
     setIsMobileMenuOpen(false);
-    
-    // Small delay to allow menu to close, then scroll
     setTimeout(() => {
       if (href === '#') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        setActiveSection('');
       } else {
         const element = document.querySelector(href);
         if (element) {
-          const navHeight = 80; // Approximate navbar height
+          const navHeight = 80;
           const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-          window.scrollTo({
-            top: elementPosition - navHeight,
-            behavior: 'smooth'
-          });
+          window.scrollTo({ top: elementPosition - navHeight, behavior: 'smooth' });
         }
       }
     }, 100);
@@ -74,37 +109,59 @@ export const Navbar = () => {
     >
       <div className="w-full px-4 md:px-8">
         <div className="relative flex items-center justify-between h-20 md:h-28">
+
           {/* Logo */}
-          <a 
-            href="#" 
+          <a
+            href="#"
             className="flex items-center gap-2 z-50"
             data-testid="nav-logo"
             onClick={(e) => {
               e.preventDefault();
               setIsMobileMenuOpen(false);
+              setActiveSection('');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
           >
-            <img 
-              src="/img/logo_grande_vincco.png" 
-              alt="Vincco Logo" 
+            <img
+              src="/img/logo_grande_vincco.png"
+              alt="Vincco Logo"
               className="h-12 md:h-16"
             />
           </a>
 
           {/* Desktop Navigation */}
           <div className="hidden xl:flex absolute left-1/2 -translate-x-1/2 items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={(e) => scrollToSection(e, link.href)}
-                className="text-base font-semibold text-slate-600 hover:text-[#04608E] transition-colors whitespace-nowrap"
-                data-testid={`nav-link-${link.href.slice(1)}`}
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.href;
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={(e) => scrollToSection(e, link.href)}
+                  className={`group relative text-base font-semibold transition-colors whitespace-nowrap pb-1 ${
+                    isActive
+                      ? 'text-[#04608E]'
+                      : 'text-slate-600 hover:text-[#04608E]'
+                  }`}
+                  data-testid={`nav-link-${link.href.slice(1)}`}
+                >
+                  {link.label}
+
+                  {/*
+                    Underline indicator
+                    – Solid & full-width when the section is active
+                    – Fades in at 40 % width on hover (when not already active)
+                  */}
+                  <span
+                    className={`absolute bottom-0 left-0 h-0.5 rounded-full bg-[#04608E] transition-all duration-300 origin-left ${
+                      isActive
+                        ? 'w-full opacity-100'
+                        : 'w-2/5 opacity-0 group-hover:opacity-60'
+                    }`}
+                  />
+                </a>
+              );
+            })}
           </div>
 
           {/* Right Side */}
@@ -119,7 +176,7 @@ export const Navbar = () => {
               <span className="uppercase">{language}</span>
             </button>
 
-            {/* CTA Button - Desktop */}
+            {/* CTA Button */}
             <Button
               onClick={(e) => scrollToSection(e, '#contact')}
               className="hidden md:inline-flex bg-[#04608E] hover:bg-[#1A4277] text-white rounded-full px-5 lg:px-6 text-sm transition-all hover:scale-[1.02] active:scale-95"
@@ -141,11 +198,10 @@ export const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu - Fixed positioning for better zoom handling */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
-            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -153,8 +209,7 @@ export const Navbar = () => {
               className="fixed inset-0 bg-black/20 backdrop-blur-sm xl:hidden z-40"
               onClick={() => setIsMobileMenuOpen(false)}
             />
-            
-            {/* Menu Panel */}
+
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -163,20 +218,32 @@ export const Navbar = () => {
               className="fixed top-20 md:top-28 left-0 right-0 bg-white border-b border-slate-200 shadow-lg xl:hidden z-40 max-h-[calc(100vh-5rem)] overflow-y-auto"
             >
               <div className="px-4 py-4 space-y-1">
-                {navLinks.map((link, index) => (
-                  <motion.a
-                    key={link.href}
-                    href={link.href}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    onClick={(e) => scrollToSection(e, link.href)}
-                    className="block py-3 px-4 text-base font-medium text-slate-700 hover:text-[#04608E] hover:bg-slate-50 rounded-lg transition-colors"
-                    data-testid={`mobile-nav-link-${link.href.slice(1)}`}
-                  >
-                    {link.label}
-                  </motion.a>
-                ))}
+                {navLinks.map((link, index) => {
+                  const isActive = activeSection === link.href;
+                  return (
+                    <motion.a
+                      key={link.href}
+                      href={link.href}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      onClick={(e) => scrollToSection(e, link.href)}
+                      className={`flex items-center gap-2 py-3 px-4 text-base font-medium rounded-lg transition-colors ${
+                        isActive
+                          ? 'text-[#04608E] bg-[#04608E]/5'
+                          : 'text-slate-700 hover:text-[#04608E] hover:bg-slate-50'
+                      }`}
+                      data-testid={`mobile-nav-link-${link.href.slice(1)}`}
+                    >
+                      {/* Active dot indicator for mobile */}
+                      {isActive && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#04608E] flex-shrink-0" />
+                      )}
+                      {link.label}
+                    </motion.a>
+                  );
+                })}
+
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}

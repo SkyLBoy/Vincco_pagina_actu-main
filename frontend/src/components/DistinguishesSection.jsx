@@ -30,7 +30,7 @@ export const DistinguishesSection = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <span className="inline-block text-[#1EC2D7] font-semibold text-sm uppercase tracking-wider mb-2 px-4 py-1 bg-[#1EC2D7]/20 rounded-full">04</span>
+
           <h2 className="font-outfit text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight mt-3 mb-3">
             {t('distinguishes.title')}
           </h2>

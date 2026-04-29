@@ -5,35 +5,32 @@ const partners = [
   { 
     name: 'Microsoft', 
     logo: '/img/microsoft-logo.png',
-    filter: false
+    invert: true   // logo oscuro → se invierte a blanco sobre fondo azul
   },
   { 
     name: 'Dell EMC', 
     logo: '/img/dell-logo.png',
-    filter: false,
-    height: '100px'
+    invert: true
   },
   { 
     name: 'Kaspersky', 
     logo: '/img/kaspersky-logo.png',
-    filter: false
+    invert: true
   },
   { 
     name: 'HP', 
     logo: '/img/logo-hp.png',
-    filter: false,
-    height: '80px'
+    invert: true
   },
   { 
     name: 'Samsung', 
     logo: '/img/samsung-logo.png',
-    filter: false,
-    height: '120px'
+    invert: false  // logo ya tiene colores claros, no necesita inversión
   },
   { 
     name: 'CT Internacionales', 
     logo: '/img/logo-ct.png',
-    filter: false
+    invert: false
   },
 ];
 
@@ -79,7 +76,7 @@ export const PartnersMarquee = () => {
 
   return (
     <section className="bg-gradient-to-br from-[#04608E] to-[#1A4277] py-12 overflow-hidden relative">
-      {/* Dot pattern — igual que ContactForm */}
+      {/* Dot pattern */}
       <div
         className="absolute inset-0 opacity-10"
         style={{
@@ -108,7 +105,7 @@ export const PartnersMarquee = () => {
         </motion.p>
       </div>
 
-      {/* Logos grid estático — sin marquesina, altura homologada */}
+      {/* Logos grid — altura y estilos homologados para todos los logos */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -125,9 +122,11 @@ export const PartnersMarquee = () => {
               <img
                 src={partner.logo}
                 alt={partner.name}
-                style={{ height: '48px' }}
-                className={`w-auto object-contain opacity-60 hover:opacity-100 transition-opacity duration-300 grayscale hover:grayscale-0 brightness-0 invert ${
-                  partner.filter ? '' : 'hover:brightness-200 hover:invert-0'
+                style={{ height: '48px', maxWidth: '100%' }}
+                className={`w-auto object-contain opacity-80 hover:opacity-100 transition-all duration-300 ${
+                  partner.invert
+                    ? 'brightness-0 invert grayscale hover:grayscale-0 hover:brightness-200 hover:invert-0'
+                    : 'grayscale hover:grayscale-0'
                 }`}
                 loading="lazy"
               />
@@ -136,7 +135,7 @@ export const PartnersMarquee = () => {
         </div>
 
         {/* Disclaimer */}
-        <p className="text-center text-white/40 text-xs mt-6">
+        <p className="text-center mt-6" style={{ fontSize: '0.90rem', color: '#fff' }}>
           {disclaimer}
         </p>
       </motion.div>
